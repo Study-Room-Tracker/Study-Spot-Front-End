@@ -1,10 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 
+/* Global Styles */
 body {
   font-family: "Nunito", sans-serif;
   margin: 0;
   padding: 0;
 }
+
+/* Navbar Styles */
 header {
   display: flex;
   justify-content: space-between;
@@ -56,4 +59,21 @@ header nav .nav-button {
 
 header nav .nav-button:hover {
   opacity: 80%;
+}
+
+/* Footer Styles */
+footer div {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+footer div img {
+  height: auto;
+  width: clamp(2rem, 5vw, 3rem);
+}
+
+footer p {
+  text-align: center;
+  font-size: clamp(0.8rem, 2vw, 1rem);
 }
