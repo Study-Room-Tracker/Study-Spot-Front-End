@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const NavbarComponent = () => {
+const NavbarComponent: React.FC = () => {
   return (
     <header>
       <Link to="/" className="logo">

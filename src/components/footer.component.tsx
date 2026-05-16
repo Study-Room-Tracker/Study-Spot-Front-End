@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const FooterComponent = () => {
+const FooterComponent: React.FC = () => {
   return (
     <footer>
       <div>

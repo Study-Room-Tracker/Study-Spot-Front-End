@@ -1,7 +1,10 @@
-import NavbarComponent from "../components/navbar.component";
-
+import MapGridComponent from "../components/mapgrid.component";
 const HomePage = () => {
-  return <div></div>;
+  return (
+    <>
+      <MapGridComponent />
+    </>
+  );
 };
 
 export default HomePage;

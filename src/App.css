@@ -61,6 +61,82 @@ header nav .nav-button:hover {
   opacity: 80%;
 }
 
+/*Mapgrid component*/
+.section-title {
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-top: 3rem;
+  font-weight: bold;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  text-align: center;
+  justify-items: center;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}
+
+.room {
+  border: 1px solid black;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  width: clamp(1rem, 20vw, 15rem);
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.room:hover {
+  transform: scale(1.05);
+  border-color: #cbd5e1;
+}
+.room h2 {
+  font-size: clamp(1.3rem, 1.5vw, 2rem);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+.room h2:hover {
+  white-space: normal;
+  overflow: visible;
+}
+
+.room p {
+  color: #64748b;
+  font-size: clamp(0.95rem, 3vw, 1.125rem);
+}
+
+.status-btn {
+  margin-top: auto;
+  cursor: pointer;
+  background-color: #437edc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  width: 100%;
+}
+
+.status-btn:hover {
+  background-color: #2563eb;
+}
+.status-btn:active {
+  transform: scale(0.98);
+}
+
 /* Footer Styles */
 footer div {
   display: flex;
