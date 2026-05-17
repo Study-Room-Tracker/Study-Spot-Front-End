@@ -6,6 +6,15 @@ body {
   margin: 0;
   padding: 0;
 }
+/* Reusable Animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0; /* Start with the text hidden */
+  }
+  100% {
+    opacity: 1; /* Fully visible at the end of the animation */
+  }
+}
 
 /* Navbar Styles */
 header {
@@ -64,9 +73,9 @@ header nav .nav-button:hover {
 /*Mapgrid component*/
 .section-title {
   text-align: center;
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.5rem, 4vw, 3rem);
   margin-top: 3rem;
-  font-weight: bold;
+  animation: fadeIn 1s ease-in-out forwards;
 }
 
 .map-grid {
@@ -77,6 +86,8 @@ header nav .nav-button:hover {
   justify-items: center;
   margin-top: 5rem;
   margin-bottom: 5rem;
+  /* animation-name | duration | easing | fill-mode */
+  animation: fadeIn 1s ease-in-out forwards;
 }
 
 .room {
@@ -137,6 +148,24 @@ header nav .nav-button:hover {
   transform: scale(0.98);
 }
 
+/* About Page Styles */
+.about-container {
+  max-width: 50rem;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 2rem;
+  padding: 2rem;
+  animation: fadeIn 1s ease-out forwards;
+}
+.about-container h2 {
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 1rem;
+}
+.about-container p {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  line-height: 1.6;
+}
+
 /* Footer Styles */
 footer div {
   display: flex;
@@ -147,6 +176,13 @@ footer div {
 footer div img {
   height: auto;
   width: clamp(2rem, 5vw, 3rem);
+}
+footer div img {
+  transition: transform 0.2s ease-in-out;
+}
+
+footer div img:hover {
+  transform: translateY(-5px);
 }
 
 footer p {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { mockRooms } from "../data";
 import type { Room } from "../types/types";
 
-const MapGridComponent: React.FC = () => {
+const MapGridComponent = () => {
   const [rooms, setRooms] = useState<Room[]>(mockRooms);
   const toggleRoomStatus = (roomId: number) => {
     // prevRooms is the current state of rooms before the update so originally it is mockRooms
