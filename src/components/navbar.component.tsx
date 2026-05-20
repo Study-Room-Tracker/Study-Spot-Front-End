@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import React from "react";
+import LoginComponent from "./login.component";
 
 const NavbarComponent = () => {
+  const [showLogin, setShowLogin] = React.useState(false);
   return (
     <header>
       <Link to="/" className="logo">
@@ -19,12 +22,13 @@ const NavbarComponent = () => {
         <Link to="/contact" className="nav-link">
           Contact
         </Link>
-        <Link to="/login">
-          <button className="nav-button">Log in</button>
-        </Link>
-        <Link to="/signup">
-          <button className="nav-button">Sign Up</button>
-        </Link>
+
+        <button className="nav-button" onClick={() => setShowLogin(true)}>
+          Log in
+        </button>
+        {showLogin && <LoginComponent onClose={() => setShowLogin(false)} />}
+
+        <button className="nav-button">Sign Up</button>
       </nav>
     </header>
   );

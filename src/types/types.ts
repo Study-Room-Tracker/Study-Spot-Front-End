@@ -7,3 +7,8 @@ export interface Room {
   createdAt: string;
   updatedAt: string;
 }
+
+// handles log in form props
+export interface LoginFormProps {
+  onClose: () => void;
+}
