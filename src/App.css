@@ -247,13 +247,13 @@ header nav .nav-button:hover {
   color: #437edc;
   margin-top: 0;
   font-size: clamp(1.5rem, 4vw, 2rem);
-  margin-bottom: 1rem;
+  margin-bottom: 3rem;
   text-align: center;
 }
 .login-form label {
   display: block;
   margin-bottom: 0.5rem;
-  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-size: clamp(0.85rem, 1vw, 0.875rem);
   font-weight: 600;
 }
 .login-form input {
@@ -262,14 +262,14 @@ header nav .nav-button:hover {
   margin-bottom: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-size: clamp(0.85rem, 2vw, 0.875rem);
   box-sizing: border-box;
 }
 .login-form .checkbox-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 8px;
+  margin-top: -0.5rem;
 }
 .login-form .checkbox-container input[type="checkbox"] {
   margin-bottom: 0.7rem;
@@ -278,7 +278,12 @@ header nav .nav-button:hover {
   cursor: pointer;
 }
 .login-form .checkbox-container label {
-  font-size: clamp(0.5rem, 2vw, 0.875rem);
+  font-size: clamp(0.85rem, 2vw, 0.875rem);
+}
+.login-form .login-required-label::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
 }
 .login-form p {
   text-align: center;
@@ -311,7 +316,7 @@ header nav .nav-button:hover {
 }
 .login-form .close-btn {
   position: relative;
-  top: 6rem;
+  top: 0.5rem;
   left: 50%;
   transform: translateX(-50%);
   background-color: #e8eaec;
@@ -330,6 +335,122 @@ header nav .nav-button:hover {
   background-color: #2563eb;
 }
 .login-form .submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* SignUp Component Styles */
+.signup-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: clamp(100%, 50vw, 35rem);
+  height: 100vh;
+  display: flex;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.signup-container .signup-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.signup-container h2 {
+  color: #437edc;
+  margin-top: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 3rem;
+  text-align: center;
+}
+.signup-container label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: clamp(0.85rem, 1vw, 0.875rem);
+  font-weight: 600;
+}
+.signup-container .signup-required-label::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
+}
+.signup-container input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: clamp(0.85rem, 1vw, 0.875rem);
+  box-sizing: border-box;
+}
+.signup-container .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: -0.5rem;
+}
+.signup-container .checkbox-container input[type="checkbox"] {
+  margin-bottom: 0.7rem;
+  margin-right: -0.1rem;
+  width: auto;
+  cursor: pointer;
+}
+.signup-container .checkbox-container label {
+  font-size: clamp(0.85rem, 2vw, 0.875rem);
+}
+.signup-container p {
+  text-align: center;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  margin-top: 2rem;
+}
+.signup-container p a {
+  color: #437edc;
+  text-decoration: none;
+  font-weight: 600;
+}
+.signup-container p a:hover {
+  text-decoration: underline;
+}
+.signup-container .signup-submit-btn {
+  width: 100%;
+  background-color: #437edc;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+  margin-top: 2rem;
+}
+.signup-container .signup-close-btn {
+  position: relative;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #e8eaec;
+  border: none;
+  border-radius: 999px;
+  color: #437edc;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  font-family: "Roboto", sans-serif;
+}
+.signup-container .signup-close-btn:hover {
+  background-color: #d4dfec;
+}
+.signup-container .signup-submit-btn:hover {
+  background-color: #2563eb;
+}
+.signup-container .signup-submit-btn:active {
   transform: scale(0.98);
 }
 

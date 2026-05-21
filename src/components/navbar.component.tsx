@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import LoginComponent from "./login.component";
+import SignUpComponent from "./signup.component";
 
 const NavbarComponent = () => {
   const [showLogin, setShowLogin] = React.useState(false);
+  const [showSignUp, setShowSignUp] = React.useState(false);
   return (
     <header>
       <Link to="/" className="logo">
@@ -28,7 +30,10 @@ const NavbarComponent = () => {
         </button>
         {showLogin && <LoginComponent onClose={() => setShowLogin(false)} />}
 
-        <button className="nav-button">Sign Up</button>
+        <button className="nav-button" onClick={() => setShowSignUp(true)}>
+          Sign Up
+        </button>
+        {showSignUp && <SignUpComponent onClose={() => setShowSignUp(false)} />}
       </nav>
     </header>
   );

@@ -23,7 +23,9 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
       <div className="login-form" onClick={(e) => e.stopPropagation()}>
         <h2>Log In</h2>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email" className="login-required-label">
+            Email:
+          </label>
           <input
             type="email"
             id="email"
@@ -33,7 +35,9 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
             placeholder="Enter your email"
             required
           />
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password" className="login-required-label">
+            Password:
+          </label>
           <input
             type={showPassword ? "text" : "password"}
             id="password"
