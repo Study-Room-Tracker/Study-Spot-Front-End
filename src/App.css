@@ -339,6 +339,61 @@ header nav .nav-button:hover {
 }
 
 /* SignUp Component Styles */
+.success-message-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: clamp(100%, 50vw, 35rem);
+  height: 100vh;
+  display: flex;
+  background: rgba(0, 0, 0, 0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.success-message {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease-out forwards;
+}
+.success-message h2 {
+  color: #437edc;
+  margin-top: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.success-message p {
+  text-align: center;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  margin-bottom: 2rem;
+}
+.success-message .close-btn {
+  display: block;
+  margin: 0 auto;
+  background-color: #437edc;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+.success-message .close-btn:hover {
+  background-color: #2563eb;
+}
+.success-message .close-btn:active {
+  transform: scale(0.98);
+}
+
 .signup-container {
   position: fixed;
   top: 0;
@@ -350,6 +405,13 @@ header nav .nav-button:hover {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+.signup-container .error-message {
+  color: #dc3545;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  margin-top: -2rem;
+  text-align: center;
 }
 .signup-container .signup-form {
   background: white;
