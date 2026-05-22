@@ -1,18 +1,40 @@
 import React from "react";
 import type { LoginFormProps } from "../types/types";
+import { mockLogin } from "../services/authService";
 
-const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
+const LoginComponent: React.FC<LoginFormProps> = ({
+  onClose,
+  onSwitchToSignUp,
+  onLoginSuccess,
+}) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the login logic, such as sending a request to your backend API
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // After successful login, you can close the form
-    onClose();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const response = await mockLogin({ email, password });
+      if (response.success) {
+        if (response.token) {
+          localStorage.setItem("authToken", response.token);
+        }
+        onLoginSuccess();
+        onClose();
+      } else {
+        setError(response.message);
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     // The container-overlay div covers the entire screen and listens for clicks to close the form
@@ -22,6 +44,7 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
     <div className="container-overlay" onClick={onClose}>
       <div className="login-form" onClick={(e) => e.stopPropagation()}>
         <h2>Log In</h2>
+        {error && <p className="login-error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           <label htmlFor="email" className="login-required-label">
             Email:
@@ -34,6 +57,7 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
+            disabled={loading}
           />
           <label htmlFor="password" className="login-required-label">
             Password:
@@ -46,6 +70,7 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
+            disabled={loading}
           />
           <div className="checkbox-container">
             <input
@@ -53,17 +78,21 @@ const LoginComponent: React.FC<LoginFormProps> = ({ onClose }) => {
               name="checkbox-show-password"
               checked={showPassword}
               onChange={(e) => setShowPassword(e.target.checked)}
+              disabled={loading}
             />
             <label>Show Password</label>
           </div>
           <button type="submit" className="submit-btn">
-            Log In
+            {loading ? "Logging in..." : "Log In"}
           </button>
           <p>
-            Don't have an account? <a href="/signup">Sign Up</a>
+            Don't have an account?{" "}
+            <button className="switch-form-btn" onClick={onSwitchToSignUp}>
+              Sign Up
+            </button>
           </p>
         </form>
-        <button className="close-btn" onClick={onClose}>
+        <button className="close-btn" onClick={onClose} disabled={loading}>
           x Close
         </button>
       </div>

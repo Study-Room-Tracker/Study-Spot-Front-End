@@ -4,8 +4,22 @@ import LoginComponent from "./login.component";
 import SignUpComponent from "./signup.component";
 
 const NavbarComponent = () => {
-  const [showLogin, setShowLogin] = React.useState(false);
-  const [showSignUp, setShowSignUp] = React.useState(false);
+  const [activeMenu, setActiveMenu] = React.useState<"login" | "signup" | null>(
+    null,
+  );
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    setIsLoggedIn(false);
+  };
   return (
     <header>
       <Link to="/" className="logo">
@@ -25,15 +39,42 @@ const NavbarComponent = () => {
           Contact
         </Link>
 
-        <button className="nav-button" onClick={() => setShowLogin(true)}>
-          Log in
-        </button>
-        {showLogin && <LoginComponent onClose={() => setShowLogin(false)} />}
+        {isLoggedIn ? (
+          <button className="nav-button" onClick={handleLogout}>
+            Log out
+          </button>
+        ) : (
+          <>
+            {" "}
+            <button
+              className="nav-button"
+              onClick={() => setActiveMenu("login")}
+            >
+              Log in
+            </button>
+            <button
+              className="nav-button"
+              onClick={() => setActiveMenu("signup")}
+            >
+              Sign Up
+            </button>
+          </>
+        )}
 
-        <button className="nav-button" onClick={() => setShowSignUp(true)}>
-          Sign Up
-        </button>
-        {showSignUp && <SignUpComponent onClose={() => setShowSignUp(false)} />}
+        {activeMenu === "login" && (
+          <LoginComponent
+            onClose={() => setActiveMenu(null)}
+            onSwitchToSignUp={() => setActiveMenu("signup")}
+            onLoginSuccess={() => setIsLoggedIn(true)}
+          />
+        )}
+
+        {activeMenu === "signup" && (
+          <SignUpComponent
+            onClose={() => setActiveMenu(null)}
+            onSwitchToLogin={() => setActiveMenu("login")}
+          />
+        )}
       </nav>
     </header>
   );

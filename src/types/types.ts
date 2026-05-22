@@ -11,4 +11,11 @@ export interface Room {
 // handles log in form props
 export interface LoginFormProps {
   onClose: () => void;
+  onSwitchToSignUp: () => void;
+  onLoginSuccess: () => void;
+}
+
+export interface SignUpFormProps {
+  onClose: () => void;
+  onSwitchToLogin: () => void;
 }

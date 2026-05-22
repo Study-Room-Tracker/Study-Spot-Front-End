@@ -1,9 +1,11 @@
 import React from "react";
-import type { LoginFormProps } from "../types/types";
-import { Link } from "react-router-dom";
+import type { SignUpFormProps } from "../types/types";
 import { mockSignUp } from "../services/authService";
 
-const SignUpComponent: React.FC<LoginFormProps> = ({ onClose }) => {
+const SignUpComponent: React.FC<SignUpFormProps> = ({
+  onClose,
+  onSwitchToLogin,
+}) => {
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -121,7 +123,10 @@ const SignUpComponent: React.FC<LoginFormProps> = ({ onClose }) => {
             {loading ? "Creating account..." : "Sign Up"}
           </button>
           <p>
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account?{" "}
+            <button className="switch-form-btn" onClick={onSwitchToLogin}>
+              Log in
+            </button>
           </p>
         </form>
         <button className="signup-close-btn" onClick={onClose}>

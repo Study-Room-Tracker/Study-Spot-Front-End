@@ -250,6 +250,12 @@ header nav .nav-button:hover {
   margin-bottom: 3rem;
   text-align: center;
 }
+.login-form .login-error-message {
+  color: #dc3545;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
 .login-form label {
   display: block;
   margin-bottom: 0.5rem;
@@ -290,12 +296,15 @@ header nav .nav-button:hover {
   font-size: clamp(0.8rem, 2vw, 1rem);
   margin-top: 2rem;
 }
-.login-form p a {
+.switch-form-btn {
+  background: none;
+  border: none;
   color: #437edc;
-  text-decoration: none;
-  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: clamp(0.8rem, 2vw, 1rem);
 }
-.login-form p a:hover {
+.switch-form-btn:hover {
   text-decoration: underline;
 }
 
