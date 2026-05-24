@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import React from "react";
 import LoginComponent from "./login.component";
 import SignUpComponent from "./signup.component";
+import { useNavigate } from "react-router-dom";
 
 const NavbarComponent = () => {
+  const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = React.useState<"login" | "signup" | null>(
     null,
   );
   const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
+
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -19,6 +23,7 @@ const NavbarComponent = () => {
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsLoggedIn(false);
+    setIsDropdownOpen(false);
   };
   return (
     <header>
@@ -40,9 +45,30 @@ const NavbarComponent = () => {
         </Link>
 
         {isLoggedIn ? (
-          <button className="nav-button" onClick={handleLogout}>
-            Log out
-          </button>
+          <div className="profile-menu-container">
+            <button
+              className="profile-icon-btn"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <img src="src/assets/profile-icon.png" alt="Profile icon" />
+            </button>
+            {isDropdownOpen && (
+              <div className="profile-dropdown">
+                <button
+                  onClick={() => {
+                    setIsDropdownOpen(false);
+                    navigate("/profile");
+                  }}
+                >
+                  My Profile
+                </button>
+                <hr />
+                <button className="logout-button" onClick={handleLogout}>
+                  Log Out
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <>
             {" "}
