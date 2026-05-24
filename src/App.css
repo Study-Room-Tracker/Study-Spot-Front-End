@@ -589,6 +589,134 @@ header nav .nav-button:hover {
   transform: scale(0.98);
 }
 
+/* Profile Page Styles */
+.profile-container {
+  max-width: 50rem;
+  margin: 0 auto 2rem auto;
+  padding: 2rem;
+}
+
+.profile-container h1 {
+  margin-bottom: 10px;
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.profile-container .role-badge {
+  display: inline-block;
+  background-color: #e2e8f0;
+  color: #334155;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
+  margin-bottom: 1rem;
+}
+
+.profile-container .message-box {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+}
+
+.profile-container .message-box.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.profile-container .message-box.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Grid Layout for the cards */
+.profile-container .profile-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.profile-container .profile-card {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+.profile-container .profile-card h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+.profile-container .profile-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.profile-container .profile-card label {
+  font-weight: 600;
+  font-size: clamp(0.85rem, 2vw, 0.875rem);
+}
+.profile-container .profile-card input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: clamp(0.85rem, 2vw, 0.875rem);
+  margin-left: 2rem;
+}
+.profile-container .save-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  padding: 10px 16px;
+  width: fit-content;
+}
+
+.profile-container .save-btn:hover {
+  background-color: #0056b3;
+}
+
+.profile-container .save-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Danger Zone Specific Styles */
+.profile-container .danger-zone {
+  border-color: #fecaca;
+  background-color: #fffafb;
+}
+
+.profile-container .danger-zone h3 {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: #dc3545;
+  border-bottom-color: #fecaca;
+}
+
+.profile-container .delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+}
+
+.profile-container .delete-btn:hover {
+  background-color: #c82333;
+}
+
 /* Footer Styles */
 footer div {
   display: flex;

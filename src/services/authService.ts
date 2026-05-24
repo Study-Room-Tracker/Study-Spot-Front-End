@@ -8,6 +8,12 @@ export interface LoginData {
   email: string;
   password: string;
 }
+export interface UserProfile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: "USER" | "ADMIN";
+}
 
 // Fake emails to simulate existing users in the database
 const mockUserDatabase = [
@@ -57,5 +63,56 @@ export const mockLogin = (
         });
       }
     }, 1200);
+  });
+};
+
+export const mockGetUserProfile = (): Promise<{
+  success: boolean;
+  data?: UserProfile;
+  message?: string;
+}> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        success: true,
+        data: {
+          firstName: "John",
+          lastName: "Doe",
+          email: "johndoe@test.com",
+          role: "USER",
+        },
+      });
+    }, 800);
+  });
+};
+
+export const mockUpdateUserProfile = (
+  data: Partial<UserProfile>,
+): Promise<{ success: boolean; message: string }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, message: "Profile updated successfully" });
+    }, 1000);
+  });
+};
+
+export const mockChangePassword = (
+  password: string,
+): Promise<{ success: boolean; message: string }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, message: "Password changed successfully" });
+    }, 1000);
+  });
+};
+
+export const mockDeleteAccount = (): Promise<{
+  success: boolean;
+  message: string;
+}> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ success: true, message: "Account deleted successfully" });
+    }, 1500);
   });
 };
