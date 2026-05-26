@@ -132,6 +132,37 @@ header nav .nav-button:hover {
   background-color: #2563eb;
 }
 
+/* Landing Page Styles */
+.landing-page {
+  text-align: center;
+  padding: 4rem 2rem;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+.landing-page h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+}
+.landing-page p {
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+.landing-page button {
+  background-color: #437edc;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.landing-page button:hover {
+  background-color: #2563eb;
+}
+
 /*Mapgrid component*/
 .section-title {
   text-align: center;

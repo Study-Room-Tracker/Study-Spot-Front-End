@@ -1,29 +1,30 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 import LoginComponent from "./login.component";
 import SignUpComponent from "./signup.component";
-import { useNavigate } from "react-router-dom";
 
-const NavbarComponent = () => {
+interface NavbarComponentProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+  activeMenu: "login" | "signup" | null;
+  setActiveMenu: (menu: "login" | "signup" | null) => void;
+}
+
+const NavbarComponent: React.FC<NavbarComponentProps> = ({
+  isLoggedIn,
+  setIsLoggedIn,
+  activeMenu,
+  setActiveMenu,
+}) => {
   const navigate = useNavigate();
-  const [activeMenu, setActiveMenu] = React.useState<"login" | "signup" | null>(
-    null,
-  );
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
 
   const [isDropdownOpen, setIsDropdownOpen] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     setIsLoggedIn(false);
     setIsDropdownOpen(false);
+    navigate("/landing");
   };
   return (
     <header>

@@ -1,13 +1,27 @@
+import React from "react";
 import { Outlet } from "react-router-dom";
 import NavbarComponent from "../components/navbar.component";
 import FooterComponent from "../components/footer.component";
 
-const MainLayout = () => {
+interface MainLayoutProps {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (value: boolean) => void;
+}
+
+const MainLayout = ({ isLoggedIn, setIsLoggedIn }: MainLayoutProps) => {
+  const [activeMenu, setActiveMenu] = React.useState<"login" | "signup" | null>(
+    null,
+  );
   return (
     <div className="layout">
-      <NavbarComponent />
+      <NavbarComponent
+        isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn}
+        activeMenu={activeMenu}
+        setActiveMenu={setActiveMenu}
+      />
       <main>
-        <Outlet />
+        <Outlet context={{ setActiveMenu }} />
       </main>
       <FooterComponent />
     </div>
