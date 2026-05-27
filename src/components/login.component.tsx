@@ -22,10 +22,11 @@ const LoginComponent: React.FC<LoginFormProps> = ({
     try {
       const response = await mockLogin({ email, password });
       if (response.success) {
-        if (response.token) {
-          localStorage.setItem("authToken", response.token);
-        }
-        onLoginSuccess();
+        localStorage.setItem("authToken", response.token || ""); // Save token to localStorage
+        const roleToSave =
+          email.toLocaleLowerCase() === "admin@test.com" ? "ADMIN" : "USER"; // Simple role assignment based on email
+        localStorage.setItem("userRole", roleToSave); // Save user role in localStorage
+        onLoginSuccess(roleToSave); // Pass the user role to the parent component
         onClose();
       } else {
         setError(response.message);

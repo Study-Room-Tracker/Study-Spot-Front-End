@@ -6,6 +6,7 @@ import SignUpComponent from "./signup.component";
 interface NavbarComponentProps {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
+  setUserRole: (role: "USER" | "ADMIN" | null) => void;
   activeMenu: "login" | "signup" | null;
   setActiveMenu: (menu: "login" | "signup" | null) => void;
 }
@@ -13,6 +14,7 @@ interface NavbarComponentProps {
 const NavbarComponent: React.FC<NavbarComponentProps> = ({
   isLoggedIn,
   setIsLoggedIn,
+  setUserRole,
   activeMenu,
   setActiveMenu,
 }) => {
@@ -22,7 +24,9 @@ const NavbarComponent: React.FC<NavbarComponentProps> = ({
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
+    localStorage.removeItem("userRole");
     setIsLoggedIn(false);
+    setUserRole(null);
     setIsDropdownOpen(false);
     navigate("/landing");
   };
@@ -92,7 +96,10 @@ const NavbarComponent: React.FC<NavbarComponentProps> = ({
           <LoginComponent
             onClose={() => setActiveMenu(null)}
             onSwitchToSignUp={() => setActiveMenu("signup")}
-            onLoginSuccess={() => setIsLoggedIn(true)}
+            onLoginSuccess={(role) => {
+              setIsLoggedIn(true);
+              setUserRole(role);
+            }}
           />
         )}
 

@@ -12,7 +12,7 @@ export interface Room {
 export interface LoginFormProps {
   onClose: () => void;
   onSwitchToSignUp: () => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (role: "USER" | "ADMIN") => void;
 }
 
 export interface SignUpFormProps {

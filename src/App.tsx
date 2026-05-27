@@ -9,24 +9,34 @@ import ProfilePage from "./pages/profile.page";
 import LandingPage from "./pages/landing.page";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    // Simulate checking for an auth token in localStorage
+  const [isLoggedIn, setIsLoggedIn] = React.useState<boolean>(() => {
     const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsLoggedIn(true);
-    }
-  }, []);
+    return !!token;
+  });
+  const [userRole, setUserRole] = React.useState<"USER" | "ADMIN" | null>(
+    () => {
+      return localStorage.getItem("userRole") as "USER" | "ADMIN" | null;
+    },
+  ); // Default role is 'user'
+
   return (
     <Routes>
       <Route
         element={
-          <MainLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+          <MainLayout
+            isLoggedIn={isLoggedIn}
+            setIsLoggedIn={setIsLoggedIn}
+            setUserRole={setUserRole}
+          />
         }
       >
         {/* Show HomePage if logged in, otherwise show LandingPage */}
-        <Route path="/" element={isLoggedIn ? <HomePage /> : <LandingPage />} />
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? <HomePage userRole={userRole} /> : <LandingPage />
+          }
+        />
 
         {/* Public Routes that are accessible to all users */}
         <Route path="/about" element={<AboutPage />} />

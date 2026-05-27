@@ -6,9 +6,14 @@ import FooterComponent from "../components/footer.component";
 interface MainLayoutProps {
   isLoggedIn: boolean;
   setIsLoggedIn: (value: boolean) => void;
+  setUserRole: (role: "USER" | "ADMIN" | null) => void;
 }
 
-const MainLayout = ({ isLoggedIn, setIsLoggedIn }: MainLayoutProps) => {
+const MainLayout = ({
+  isLoggedIn,
+  setIsLoggedIn,
+  setUserRole,
+}: MainLayoutProps) => {
   const [activeMenu, setActiveMenu] = React.useState<"login" | "signup" | null>(
     null,
   );
@@ -17,6 +22,7 @@ const MainLayout = ({ isLoggedIn, setIsLoggedIn }: MainLayoutProps) => {
       <NavbarComponent
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
+        setUserRole={setUserRole}
         activeMenu={activeMenu}
         setActiveMenu={setActiveMenu}
       />

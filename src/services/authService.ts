@@ -19,6 +19,7 @@ export interface UserProfile {
 const mockUserDatabase = [
   { email: "johndoe@test.com", password: "johndoe123" },
   { email: "user@test.com", password: "user123" },
+  { email: "admin@test.com", password: "admin123" },
 ];
 
 export const mockSignUp = (
