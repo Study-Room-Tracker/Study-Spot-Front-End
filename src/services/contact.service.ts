@@ -1,5 +1,8 @@
 // services/contactService.ts
 
+// 1. Define your backend's base URL (pointing to your Express server)
+const API_BASE_URL = "http://localhost:4000";
+
 export interface ContactMessage {
   id: number;
   name: string;
@@ -8,51 +11,64 @@ export interface ContactMessage {
   createdAt: string;
 }
 
-// 1. Temporary local "database" storage
-const mockMessagesStorage: ContactMessage[] = [
-  {
-    id: 1,
-    name: "Alex Rivera",
-    email: "alex.rivera@university.edu",
-    message:
-      "Is the Ada Lovelace lab open for booking during weekend hackathons?",
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
-  },
-  {
-    id: 2,
-    name: "Marcus Vance",
-    email: "m.vance@university.edu",
-    message:
-      "Left my MacBook charger in Room 302 yesterday afternoon. Has anyone turned it in?",
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(), // 5 hours ago
-  },
-];
-
-// 2. Mock POST Route: Simulates saving a message
-export const mockSaveMessage = async (
+// 2. Real POST Route: Sends form data to your PostgreSQL database
+export const saveMessage = async (
   name: string,
   email: string,
   message: string,
 ): Promise<{ success: boolean; message: string }> => {
-  await new Promise((resolve) => setTimeout(resolve, 400)); // Network delay simulation
+  try {
+    const response = await fetch(`${API_BASE_URL}/contact`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, message }),
+    });
 
-  const newMessage: ContactMessage = {
-    id: Date.now(),
-    name,
-    email,
-    message,
-    createdAt: new Date().toISOString(),
-  };
+    const data = await response.json();
 
-  mockMessagesStorage.unshift(newMessage); // Add to the top of the pile
-  return { success: true, message: "Your message has been sent successfully!" };
+    if (!response.ok) {
+      throw new Error(data.message || "Server responded with an error");
+    }
+
+    return {
+      success: true,
+      message: data.message || "Your message has been sent successfully!",
+    };
+  } catch (error: any) {
+    console.error("Fetch error:", error);
+    return {
+      success: false,
+      message: error.message || "Could not connect to the backend server.",
+    };
+  }
 };
 
-// 3. Mock GET Route: Simulates pulling messages for Admin
-export const mockGetMessages = async (): Promise<{
+// 3. Real GET Route: Fetches database entries (If you decide to view them later)
+export const getMessages = async (): Promise<{
   success: boolean;
   data: ContactMessage[];
+  message?: string;
 }> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return { success: true, data: [...mockMessagesStorage] };
+  try {
+    const response = await fetch(`${API_BASE_URL}/contact`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Note: When you add authentication later, your Bearer Token goes here!
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to fetch messages");
+    }
+
+    return { success: true, data: data.data };
+  } catch (error: any) {
+    console.error("Fetch error:", error);
+    return { success: false, data: [], message: error.message };
+  }
 };

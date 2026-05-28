@@ -1,9 +1,5 @@
-export interface SignUpData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
+const API_BASE_URL = "http://localhost:4000/api"; // Adjust to match your backend
+
 export interface LoginData {
   email: string;
   password: string;
@@ -22,20 +18,38 @@ const mockUserDatabase = [
   { email: "admin@test.com", password: "admin123" },
 ];
 
-export const mockSignUp = (
-  data: SignUpData,
+// services/authService.ts
+
+export const signUpUser = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
 ): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (
-        mockUserDatabase.some((user) => user.email === data.email.toLowerCase())
-      ) {
-        resolve({ success: false, message: "Email already in use" });
-      } else {
-        resolve({ success: true, message: "Sign up successful" });
-      }
-    }, 1500);
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ firstName, lastName, email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Registration failed.");
+    }
+
+    // We no longer look for a token here. We just return success!
+    return {
+      success: true,
+      message: data.status || "Account created successfully!",
+    };
+  } catch (error: any) {
+    console.error("Signup error:", error);
+    return { success: false, message: error.message };
+  }
 };
 
 export const mockLogin = (

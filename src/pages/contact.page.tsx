@@ -1,5 +1,5 @@
 import React from "react";
-import { mockSaveMessage } from "../services/contact.service";
+import { saveMessage } from "../services/contact.service";
 
 const ContactPage = () => {
   const [name, setName] = React.useState("");
@@ -17,7 +17,7 @@ const ContactPage = () => {
     setIsSending(true);
     setStatus(null);
 
-    const response = await mockSaveMessage(name, email, message);
+    const response = await saveMessage(name, email, message);
 
     if (response.success) {
       setStatus({ type: "success", text: response.message });

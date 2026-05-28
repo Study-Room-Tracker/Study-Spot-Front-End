@@ -1,6 +1,6 @@
 import React from "react";
 import type { SignUpFormProps } from "../types/types";
-import { mockSignUp } from "../services/authService";
+import { signUpUser } from "../services/authService";
 
 const SignUpComponent: React.FC<SignUpFormProps> = ({
   onClose,
@@ -12,51 +12,44 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
 
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [message, setMessage] = React.useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-    try {
-      const response = await mockSignUp({
-        firstName,
-        lastName,
-        email,
-        password,
+    setIsSubmitting(true);
+    setMessage(null);
+
+    const response = await signUpUser(firstName, lastName, email, password);
+
+    if (response.success) {
+      // 1. Update the success message to give the user clear instructions
+      setMessage({
+        type: "success",
+        text: "Account created! Redirecting to login...",
       });
-      if (response.success) {
-        setSuccess(true);
-      } else {
-        setError(response.message);
-      }
-    } catch (err) {
-      setError("An error occurred during sign up. Please try again.");
-    } finally {
-      setLoading(false);
+
+      // 2. Redirect them to the login page after a short delay
+      setTimeout(() => {
+        onSwitchToLogin(); // Switch to the login form
+      }, 1500);
+    } else {
+      setMessage({ type: "error", text: response.message });
+      setIsSubmitting(false);
     }
   };
-  if (success) {
-    return (
-      <div className="success-message-container" onClick={onClose}>
-        <div className="success-message" onClick={(e) => e.stopPropagation()}>
-          <h2>Success! 🎉</h2>
-          <p>Your account has been created. You can now log in.</p>
-          <button onClick={onClose} className="close-btn">
-            x Close
-          </button>
-        </div>
-      </div>
-    );
-  }
+
   return (
     <div className="signup-container" onClick={onClose}>
       <div className="signup-form" onClick={(e) => e.stopPropagation()}>
         <h2>Sign Up</h2>
-        {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleSubmit}>
+        {message && message.type === "error" && (
+          <p className="error-message">{message.text}</p>
+        )}
+        <form onSubmit={handleSignUp}>
           <label htmlFor="first-name" className="signup-required-label">
             First Name
           </label>
@@ -67,7 +60,7 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="Enter your first name"
             required
-            disabled={loading}
+            disabled={isSubmitting}
           />
           <label htmlFor="last-name" className="signup-required-label">
             Last Name
@@ -79,7 +72,7 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Enter your last name"
             required
-            disabled={loading}
+            disabled={isSubmitting}
           />
           <label htmlFor="email" className="signup-required-label">
             Email
@@ -91,7 +84,7 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             required
-            disabled={loading}
+            disabled={isSubmitting}
           />
           <label htmlFor="password" className="signup-required-label">
             Password
@@ -103,7 +96,7 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
             required
-            disabled={loading}
+            disabled={isSubmitting}
           />
           <div className="checkbox-container">
             <input
@@ -111,16 +104,16 @@ const SignUpComponent: React.FC<SignUpFormProps> = ({
               name="checkbox-show-password"
               checked={showPassword}
               onChange={(e) => setShowPassword(e.target.checked)}
-              disabled={loading}
+              disabled={isSubmitting}
             />
             <label>Show Password</label>
           </div>
           <button
             type="submit"
             className="signup-submit-btn"
-            disabled={loading}
+            disabled={isSubmitting}
           >
-            {loading ? "Creating account..." : "Sign Up"}
+            {isSubmitting ? "Creating account..." : "Sign Up"}
           </button>
           <p>
             Already have an account?{" "}
