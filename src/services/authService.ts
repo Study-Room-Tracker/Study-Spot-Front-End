@@ -67,24 +67,39 @@ export const mockLogin = (
   });
 };
 
-export const mockGetUserProfile = (): Promise<{
+export const mockGetUserProfile = async (): Promise<{
   success: boolean;
   data?: UserProfile;
   message?: string;
 }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        success: true,
-        data: {
-          firstName: "John",
-          lastName: "Doe",
-          email: "johndoe@test.com",
-          role: "USER",
-        },
-      });
-    }, 800);
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // 1. Check who is currently logged in by looking at localStorage
+  const currentRole = localStorage.getItem("userRole") || "USER";
+
+  // 2. Return the Admin profile if they are an admin
+  if (currentRole === "ADMIN") {
+    return {
+      success: true,
+      data: {
+        firstName: "Jane",
+        lastName: "Smith",
+        email: "admin@test.com",
+        role: "ADMIN",
+      },
+    };
+  }
+
+  // 3. Otherwise, return the standard User (John Doe) profile
+  return {
+    success: true,
+    data: {
+      firstName: "John",
+      lastName: "Doe",
+      email: "user@test.com",
+      role: "USER",
+    },
+  };
 };
 
 export const mockUpdateUserProfile = (
