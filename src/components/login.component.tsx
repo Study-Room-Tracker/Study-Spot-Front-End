@@ -1,6 +1,6 @@
 import React from "react";
 import type { LoginFormProps } from "../types/types";
-import { loginUser } from "../services/authService";
+import { loginUser } from "../services/auth.service";
 
 const LoginComponent: React.FC<LoginFormProps> = ({
   onClose,

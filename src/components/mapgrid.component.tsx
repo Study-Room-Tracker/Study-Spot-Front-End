@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { mockRooms } from "../data";
+// components/mapgrid.component.tsx
+import { useState, useEffect } from "react";
+// DELETED: import { mockRooms } from "../data"; <-- No longer needed!
 import type { Room, RoomStatus } from "../types/types";
 
 interface MapGridProps {
@@ -15,14 +16,18 @@ interface MapGridProps {
 }
 
 const MapGridComponent = ({
-  rooms: propRooms,
+  rooms: propRooms = [], // Default to an empty array if undefined
   onToggleStatus,
   onDeleteRoom,
   onUpdateRoom,
   isAdmin = false,
 }: MapGridProps) => {
-  const [localRooms, setLocalRooms] = useState<Room[]>(mockRooms);
-  const rooms = propRooms || localRooms;
+  // 1. Sync live database props into a clean state array
+  const [localRooms, setLocalRooms] = useState<Room[]>(propRooms);
+
+  useEffect(() => {
+    setLocalRooms(propRooms);
+  }, [propRooms]);
 
   const [editId, setEditId] = useState<number | null>(null);
   const [editName, setEditName] = useState<string>("");
@@ -32,6 +37,7 @@ const MapGridComponent = ({
     if (onToggleStatus) {
       onToggleStatus(roomId);
     } else {
+      // Modifies local visual state temporarily
       setLocalRooms((prevRooms) =>
         prevRooms.map((room) =>
           room.id === roomId
@@ -44,7 +50,6 @@ const MapGridComponent = ({
         ),
       );
     }
-    // prevRooms is the current state of localRooms before the update so originally it is mockRooms
   };
 
   const startEditing = (room: Room) => {
@@ -59,15 +64,16 @@ const MapGridComponent = ({
     if (onUpdateRoom) {
       onUpdateRoom(roomId, editName, editStatus);
     }
-    setEditId(null); // Turn off edit mode
+    setEditId(null);
   };
+
   return (
     <>
       <h2 className="section-title">
         {isAdmin ? "Manage Rooms" : "Available Rooms"}
       </h2>
       <div className="map-grid">
-        {rooms.map((room) => {
+        {localRooms.map((room) => {
           const isEditing = editId === room.id;
           return (
             <div key={room.id} className="room">
@@ -120,7 +126,6 @@ const MapGridComponent = ({
                       Set to {room.status === "FREE" ? "FULL" : "FREE"}
                     </button>
 
-                    {/*Admin only features*/}
                     {isAdmin && (
                       <>
                         <button

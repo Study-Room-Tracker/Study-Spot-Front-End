@@ -4,8 +4,8 @@ import {
   mockChangePassword,
   mockDeleteAccount,
   mockUpdateUserProfile,
-} from "../services/authService";
-import type { UserProfile } from "../services/authService";
+} from "../services/auth.service";
+import type { UserProfile } from "../services/auth.service";
 import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {

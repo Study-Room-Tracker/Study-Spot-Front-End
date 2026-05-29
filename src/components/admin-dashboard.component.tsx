@@ -1,19 +1,42 @@
 import React from "react";
-import { mockRooms } from "../data";
 import type { Room, RoomStatus } from "../types/types";
 import MapGridComponent from "./mapgrid.component";
 
+import { getAllRooms } from "../services/room.service";
+
 const AdminDashboardComponent = () => {
-  const [rooms, setRooms] = React.useState<Room[]>(mockRooms);
+  const [rooms, setRooms] = React.useState<Room[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+  const [error, setError] = React.useState<string | null>(null);
+
   const [newRoomName, setNewRoomName] = React.useState<string>("");
   const [newRoomStatus, setNewRoomStatus] = React.useState<RoomStatus>("FREE");
+
+  React.useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await getAllRooms();
+        if (response.success) {
+          setRooms(response.data);
+        } else {
+          setError(response.message || "Failed to load rooms from database.");
+        }
+      } catch (err: unknown) {
+        setError("An unexpected network error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
 
   const handleAddRoom = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newRoomName.trim()) return;
 
     const newRoom: Room = {
-      id: Date.now(), // Generate unique ID
+      id: Date.now(), // Temporary fake ID until backend handles it
       name: newRoomName,
       status: newRoomStatus,
       createdAt: new Date().toISOString(),
@@ -21,8 +44,8 @@ const AdminDashboardComponent = () => {
     };
 
     setRooms([...rooms, newRoom]);
-    setNewRoomName(""); // Reset input field
-    setNewRoomStatus("FREE"); // Reset status to default
+    setNewRoomName("");
+    setNewRoomStatus("FREE");
   };
 
   const handleToggleStatus = (roomId: number) => {
@@ -51,7 +74,7 @@ const AdminDashboardComponent = () => {
               ...room,
               name: newName,
               status: newStatus,
-              updatedAt: new Date().toISOString(), // Refresh update stamp
+              updatedAt: new Date().toISOString(),
             }
           : room,
       ),
@@ -61,6 +84,9 @@ const AdminDashboardComponent = () => {
   const handleDeleteRoom = (roomId: number) => {
     setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
   };
+
+  if (loading) return <div>Loading Admin Dashboard...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -106,4 +132,5 @@ const AdminDashboardComponent = () => {
     </>
   );
 };
+
 export default AdminDashboardComponent;

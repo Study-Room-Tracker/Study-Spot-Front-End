@@ -7,15 +7,6 @@ export interface UserProfile {
   role: "USER" | "ADMIN";
 }
 
-// Fake emails to simulate existing users in the database
-const mockUserDatabase = [
-  { email: "johndoe@test.com", password: "johndoe123" },
-  { email: "user@test.com", password: "user123" },
-  { email: "admin@test.com", password: "admin123" },
-];
-
-// services/authService.ts
-
 export const signUpUser = async (
   firstName: string,
   lastName: string,
@@ -37,14 +28,19 @@ export const signUpUser = async (
       throw new Error(data.message || "Registration failed.");
     }
 
-    // We no longer look for a token here. We just return success!
     return {
       success: true,
       message: data.status || "Account created successfully!",
     };
-  } catch (error: any) {
-    console.error("Signup error:", error);
-    return { success: false, message: error.message };
+  } catch (error: unknown) {
+    console.error("Sign-up error:", error);
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "An unexpected error occurred during registration.";
+
+    return { success: false, message: errorMessage };
   }
 };
 
@@ -73,9 +69,14 @@ export const loginUser = async (
       message: data.message || "Login successful!",
       role: data.user?.role,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Login error:", error);
-    return { success: false, message: error.message };
+
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "An unexpected error occurred during login.";
+    return { success: false, message: errorMessage };
   }
 };
 
