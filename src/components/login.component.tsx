@@ -1,6 +1,6 @@
 import React from "react";
 import type { LoginFormProps } from "../types/types";
-import { mockLogin } from "../services/authService";
+import { loginUser } from "../services/authService";
 
 const LoginComponent: React.FC<LoginFormProps> = ({
   onClose,
@@ -20,20 +20,18 @@ const LoginComponent: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const response = await mockLogin({ email, password });
+      const response = await loginUser(email, password);
+
       if (response.success) {
-        localStorage.setItem("authToken", response.token || ""); // Save token to localStorage
-        const roleToSave =
-          email.toLocaleLowerCase() === "admin@test.com" ? "ADMIN" : "USER"; // Simple role assignment based on email
-        localStorage.setItem("userRole", roleToSave); // Save user role in localStorage
-        onLoginSuccess(roleToSave); // Pass the user role to the parent component
+        onLoginSuccess(response.role || "USER");
         onClose();
       } else {
         setError(response.message);
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
-    } finally {
+    }
+    {
       setLoading(false);
     }
   };

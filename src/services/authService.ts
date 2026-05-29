@@ -1,9 +1,5 @@
-const API_BASE_URL = "http://localhost:4000/api"; // Adjust to match your backend
+const API_BASE_URL = "http://localhost:4000/api";
 
-export interface LoginData {
-  email: string;
-  password: string;
-}
 export interface UserProfile {
   firstName: string;
   lastName: string;
@@ -52,33 +48,35 @@ export const signUpUser = async (
   }
 };
 
-export const mockLogin = (
-  data: LoginData,
-): Promise<{ success: boolean; message: string; token?: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const user = mockUserDatabase.find(
-        (user) => user.email.toLocaleLowerCase() === data.email.toLowerCase(),
-      );
-      if (!user) {
-        resolve({
-          success: false,
-          message: "No account found with this email.",
-        });
-      } else if (user.password !== data.password) {
-        resolve({
-          success: false,
-          message: "Invalid password. Please try again.",
-        });
-      } else {
-        resolve({
-          success: true,
-          message: "Login successful",
-          token: "fake-jwt-token",
-        });
-      }
-    }, 1200);
-  });
+export const loginUser = async (
+  email: string,
+  password: string,
+): Promise<{ success: boolean; message: string; role?: "USER" | "ADMIN" }> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || "Invalid credentials.");
+    }
+    if (data.user && data.user.role) {
+      localStorage.setItem("authToken", data.user.token);
+      localStorage.setItem("userRole", data.user.role);
+    }
+    return {
+      success: true,
+      message: data.message || "Login successful!",
+      role: data.user?.role,
+    };
+  } catch (error: any) {
+    console.error("Login error:", error);
+    return { success: false, message: error.message };
+  }
 };
 
 export const mockGetUserProfile = async (): Promise<{
