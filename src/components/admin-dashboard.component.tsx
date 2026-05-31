@@ -6,6 +6,7 @@ import {
   getAllRooms,
   updateRoomStatus,
   adminUpdateRoom,
+  adminDeleteRoom,
 } from "../services/room.service";
 
 const AdminDashboardComponent = () => {
@@ -98,8 +99,22 @@ const AdminDashboardComponent = () => {
     }
   };
 
-  const handleDeleteRoom = (roomId: number) => {
-    setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
+  const handleDeleteRoom = async (roomId: number) => {
+    try {
+      // 2. Fire the network request to drop it from PostgreSQL
+      const response = await adminDeleteRoom(roomId);
+
+      if (response.success) {
+        // 3. Remove it from your local array state so it vanishes from the UI grid
+        setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
+      } else {
+        // Alert if the database blocked the deletion (e.g. foreign key constraint)
+        alert(`Delete failed: ${response.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error("Delete handler error:", err);
+      alert("A network error occurred while trying to delete the room.");
+    }
   };
 
   if (loading) return <div>Loading Admin Dashboard...</div>;

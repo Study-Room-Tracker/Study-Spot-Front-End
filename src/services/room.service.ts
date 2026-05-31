@@ -88,11 +88,9 @@ export const adminUpdateRoom = async (
   newName: string,
   newStatus: "FREE" | "FULL",
 ): Promise<{ success: boolean; data?: Room; message?: string }> => {
-  // 👈 Explicit type checks
   try {
-    const token = localStorage.getItem("authToken"); // Keep token auth active here too!
+    const token = localStorage.getItem("authToken");
 
-    // Ensure this route string matches your exact Express router path (e.g. /api/rooms/:id)
     const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
       method: "PATCH",
       headers: {
@@ -112,7 +110,7 @@ export const adminUpdateRoom = async (
 
     return {
       success: true,
-      data: data.data, // Extracts your inner room object cleanly
+      data: data.data,
       message: data.status,
     };
   } catch (error: unknown) {
@@ -120,6 +118,42 @@ export const adminUpdateRoom = async (
       `Error in adminUpdateRoom wrapper for room ${roomId}:`,
       error,
     );
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "An unexpected network error occurred.";
+    return { success: false, message: errorMessage };
+  }
+};
+
+export const adminDeleteRoom = async (
+  roomId: number,
+): Promise<{ success: boolean; message?: string }> => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const response = await fetch(`${API_BASE_URL}/rooms/${roomId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Failed to delete the room from database.",
+      );
+    }
+
+    return {
+      success: true,
+      message: data.status,
+    };
+  } catch (error: unknown) {
+    console.error(`Error deleting room ${roomId}:`, error);
     const errorMessage =
       error instanceof Error
         ? error.message
