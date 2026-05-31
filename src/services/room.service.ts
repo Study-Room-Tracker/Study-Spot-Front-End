@@ -1,12 +1,5 @@
 const API_BASE_URL = "http://localhost:4000/api";
-
-export interface Room {
-  id: number;
-  name: string;
-  status: "FREE" | "FULL";
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Room } from "../types/types";
 
 export const getAllRooms = async (): Promise<{
   success: boolean;
