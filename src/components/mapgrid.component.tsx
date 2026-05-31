@@ -1,6 +1,4 @@
-// components/mapgrid.component.tsx
-import { useState, useEffect } from "react";
-// DELETED: import { mockRooms } from "../data"; <-- No longer needed!
+import React from "react";
 import type { Room, RoomStatus } from "../types/types";
 
 interface MapGridProps {
@@ -22,33 +20,19 @@ const MapGridComponent = ({
   onUpdateRoom,
   isAdmin = false,
 }: MapGridProps) => {
-  // 1. Sync live database props into a clean state array
-  const [localRooms, setLocalRooms] = useState<Room[]>(propRooms);
+  const [localRooms, setLocalRooms] = React.useState<Room[]>(propRooms);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setLocalRooms(propRooms);
   }, [propRooms]);
 
-  const [editId, setEditId] = useState<number | null>(null);
-  const [editName, setEditName] = useState<string>("");
-  const [editStatus, setEditStatus] = useState<RoomStatus>("FREE");
+  const [editId, setEditId] = React.useState<number | null>(null);
+  const [editName, setEditName] = React.useState<string>("");
+  const [editStatus, setEditStatus] = React.useState<RoomStatus>("FREE");
 
   const toggleRoomStatus = (roomId: number) => {
     if (onToggleStatus) {
       onToggleStatus(roomId);
-    } else {
-      // Modifies local visual state temporarily
-      setLocalRooms((prevRooms) =>
-        prevRooms.map((room) =>
-          room.id === roomId
-            ? {
-                ...room,
-                status: room.status === "FREE" ? "FULL" : "FREE",
-                updatedAt: new Date().toISOString(),
-              }
-            : room,
-        ),
-      );
     }
   };
 

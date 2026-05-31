@@ -1,7 +1,7 @@
 import React from "react";
 import MapGridComponent from "../components/mapgrid.component";
 import AdminDashboardComponent from "../components/admin-dashboard.component";
-import { getAllRooms } from "../services/room.service";
+import { getAllRooms, updateRoomStatus } from "../services/room.service";
 import type { Room } from "../services/room.service";
 
 interface HomePageProps {
@@ -34,6 +34,25 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
     }
   }, [userRole]);
 
+  const handleToggleStatus = async (roomId: number) => {
+    const roomToUpdate = rooms.find((room) => room.id === roomId);
+    if (!roomToUpdate) return;
+
+    const newStatus = roomToUpdate.status === "FREE" ? "FULL" : "FREE";
+
+    // Tell the backend to update it permanently
+    const response = await updateRoomStatus(roomId, newStatus);
+
+    // If successful, update the screen with the fresh database info
+    if (response.success && response.data) {
+      setRooms((prevRooms) =>
+        prevRooms.map((room) => (room.id === roomId ? response.data! : room)),
+      );
+    } else {
+      console.error(response.message);
+      alert("Failed to update status. Please try again.");
+    }
+  };
   if (userRole === "ADMIN") {
     return <AdminDashboardComponent />;
   }
@@ -43,7 +62,11 @@ const HomePage: React.FC<HomePageProps> = ({ userRole }) => {
 
   return (
     <div>
-      <MapGridComponent rooms={rooms} isAdmin={false} />
+      <MapGridComponent
+        rooms={rooms}
+        isAdmin={false}
+        onToggleStatus={handleToggleStatus}
+      />
     </div>
   );
 };

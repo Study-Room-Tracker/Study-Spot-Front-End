@@ -2,7 +2,7 @@ import React from "react";
 import type { Room, RoomStatus } from "../types/types";
 import MapGridComponent from "./mapgrid.component";
 
-import { getAllRooms } from "../services/room.service";
+import { getAllRooms, updateRoomStatus } from "../services/room.service";
 
 const AdminDashboardComponent = () => {
   const [rooms, setRooms] = React.useState<Room[]>([]);
@@ -48,18 +48,24 @@ const AdminDashboardComponent = () => {
     setNewRoomStatus("FREE");
   };
 
-  const handleToggleStatus = (roomId: number) => {
-    setRooms((prevRooms) =>
-      prevRooms.map((room) =>
-        room.id === roomId
-          ? {
-              ...room,
-              status: room.status === "FREE" ? "FULL" : "FREE",
-              updatedAt: new Date().toISOString(),
-            }
-          : room,
-      ),
-    );
+  const handleToggleStatus = async (roomId: number) => {
+    const roomToUpdate = rooms.find((room) => room.id === roomId);
+    if (!roomToUpdate) return;
+
+    const newStatus = roomToUpdate.status === "FREE" ? "FULL" : "FREE";
+
+    // Tell the backend to update it permanently
+    const response = await updateRoomStatus(roomId, newStatus);
+
+    // If successful, update the screen with the fresh database info
+    if (response.success && response.data) {
+      setRooms((prevRooms) =>
+        prevRooms.map((room) => (room.id === roomId ? response.data! : room)),
+      );
+    } else {
+      console.error(response.message);
+      alert("Failed to update status. Please try again.");
+    }
   };
 
   const handleUpdateRoom = (
