@@ -2,7 +2,11 @@ import React from "react";
 import type { Room, RoomStatus } from "../types/types";
 import MapGridComponent from "./mapgrid.component";
 
-import { getAllRooms, updateRoomStatus } from "../services/room.service";
+import {
+  getAllRooms,
+  updateRoomStatus,
+  adminUpdateRoom,
+} from "../services/room.service";
 
 const AdminDashboardComponent = () => {
   const [rooms, setRooms] = React.useState<Room[]>([]);
@@ -54,10 +58,8 @@ const AdminDashboardComponent = () => {
 
     const newStatus = roomToUpdate.status === "FREE" ? "FULL" : "FREE";
 
-    // Tell the backend to update it permanently
     const response = await updateRoomStatus(roomId, newStatus);
 
-    // If successful, update the screen with the fresh database info
     if (response.success && response.data) {
       setRooms((prevRooms) =>
         prevRooms.map((room) => (room.id === roomId ? response.data! : room)),
@@ -68,23 +70,32 @@ const AdminDashboardComponent = () => {
     }
   };
 
-  const handleUpdateRoom = (
+  const handleUpdateRoom = async (
     roomId: number,
     newName: string,
     newStatus: RoomStatus,
   ) => {
-    setRooms((prevRooms) =>
-      prevRooms.map((room) =>
-        room.id === roomId
-          ? {
-              ...room,
-              name: newName,
-              status: newStatus,
-              updatedAt: new Date().toISOString(),
-            }
-          : room,
-      ),
-    );
+    try {
+      const response = await adminUpdateRoom(roomId, newName, newStatus);
+
+      if (response.success && response.data) {
+        const updatedRoomFromDB = response.data;
+
+        setRooms((prevRooms) => {
+          const updatedArray = prevRooms.map((room) =>
+            room.id === roomId ? updatedRoomFromDB : room,
+          );
+          return updatedArray.sort((a, b) => a.id - b.id);
+        });
+      } else {
+        console.error(
+          `Admin update failed: ${response.message || "Unknown error"}`,
+        );
+      }
+    } catch (err) {
+      console.error("Admin update pipeline crashed:", err);
+      console.error("A critical networking framework failure occurred.");
+    }
   };
 
   const handleDeleteRoom = (roomId: number) => {

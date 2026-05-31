@@ -14,18 +14,12 @@ interface MapGridProps {
 }
 
 const MapGridComponent = ({
-  rooms: propRooms = [], // Default to an empty array if undefined
+  rooms = [], // Default to an empty array if undefined
   onToggleStatus,
   onDeleteRoom,
   onUpdateRoom,
   isAdmin = false,
 }: MapGridProps) => {
-  const [localRooms, setLocalRooms] = React.useState<Room[]>(propRooms);
-
-  React.useEffect(() => {
-    setLocalRooms(propRooms);
-  }, [propRooms]);
-
   const [editId, setEditId] = React.useState<number | null>(null);
   const [editName, setEditName] = React.useState<string>("");
   const [editStatus, setEditStatus] = React.useState<RoomStatus>("FREE");
@@ -42,11 +36,11 @@ const MapGridComponent = ({
     setEditStatus(room.status);
   };
 
-  const handleSave = (roomId: number) => {
+  const handleSave = async (roomId: number) => {
     if (!editName.trim()) return;
 
     if (onUpdateRoom) {
-      onUpdateRoom(roomId, editName, editStatus);
+      await onUpdateRoom(roomId, editName, editStatus);
     }
     setEditId(null);
   };
@@ -57,7 +51,7 @@ const MapGridComponent = ({
         {isAdmin ? "Manage Rooms" : "Available Rooms"}
       </h2>
       <div className="map-grid">
-        {localRooms.map((room) => {
+        {rooms.map((room) => {
           const isEditing = editId === room.id;
           return (
             <div key={room.id} className="room">
