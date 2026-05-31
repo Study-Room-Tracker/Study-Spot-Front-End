@@ -25,7 +25,7 @@ const ContactPage = () => {
       setEmail("");
       setMessage("");
     } else {
-      setStatus({ type: "error", text: "Something went wrong." });
+      setStatus({ type: "error", text: response.message });
     }
     setIsSending(false);
   };
