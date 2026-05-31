@@ -40,6 +40,43 @@ export const getAllRooms = async (): Promise<{
   }
 };
 
+export const adminCreateRoom = async (
+  name: string,
+  status: "FREE" | "FULL",
+): Promise<{ success: boolean; data?: Room; message?: string }> => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const response = await fetch(`${API_BASE_URL}/rooms`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify({ name, status }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to create new room in database.");
+    }
+
+    return {
+      success: true,
+      data: data.data,
+      message: data.status,
+    };
+  } catch (error: unknown) {
+    console.error("Error creating room:", error);
+    const errorMessage =
+      error instanceof Error
+        ? error.message
+        : "An unexpected network error occurred.";
+    return { success: false, message: errorMessage };
+  }
+};
+
 export const updateRoomStatus = async (
   roomId: number,
   newStatus: "FREE" | "FULL",

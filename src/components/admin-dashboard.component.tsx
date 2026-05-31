@@ -4,6 +4,7 @@ import MapGridComponent from "./mapgrid.component";
 
 import {
   getAllRooms,
+  adminCreateRoom,
   updateRoomStatus,
   adminUpdateRoom,
   adminDeleteRoom,
@@ -36,21 +37,31 @@ const AdminDashboardComponent = () => {
     fetchRooms();
   }, []);
 
-  const handleAddRoom = (e: React.FormEvent) => {
+  const handleAddRoom = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newRoomName.trim()) return;
 
-    const newRoom: Room = {
-      id: Date.now(), // Temporary fake ID until backend handles it
-      name: newRoomName,
-      status: newRoomStatus,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    try {
+      const response = await adminCreateRoom(newRoomName, newRoomStatus);
 
-    setRooms([...rooms, newRoom]);
-    setNewRoomName("");
-    setNewRoomStatus("FREE");
+      if (response.success && response.data) {
+        const createdRoomFromDB = response.data;
+
+        setRooms((prevRooms) => {
+          const updatedArray = [...prevRooms, createdRoomFromDB];
+
+          return updatedArray.sort((a, b) => a.id - b.id);
+        });
+
+        setNewRoomName("");
+        setNewRoomStatus("FREE");
+      } else {
+        alert(`Create room failed: ${response.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error("Create room handler crashed:", err);
+      alert("A network error occurred while trying to register the new room.");
+    }
   };
 
   const handleToggleStatus = async (roomId: number) => {
@@ -101,14 +112,11 @@ const AdminDashboardComponent = () => {
 
   const handleDeleteRoom = async (roomId: number) => {
     try {
-      // 2. Fire the network request to drop it from PostgreSQL
       const response = await adminDeleteRoom(roomId);
 
       if (response.success) {
-        // 3. Remove it from your local array state so it vanishes from the UI grid
         setRooms((prevRooms) => prevRooms.filter((room) => room.id !== roomId));
       } else {
-        // Alert if the database blocked the deletion (e.g. foreign key constraint)
         alert(`Delete failed: ${response.message || "Unknown error"}`);
       }
     } catch (err) {
