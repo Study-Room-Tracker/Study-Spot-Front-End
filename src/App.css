@@ -884,34 +884,6 @@ header nav .nav-button:hover {
   cursor: not-allowed;
 }
 
-/* Danger Zone Specific Styles */
-.profile-container .danger-zone {
-  border-color: #fecaca;
-  background-color: #fffafb;
-}
-
-.profile-container .danger-zone h3 {
-  font-size: clamp(1.2rem, 3vw, 1.5rem);
-  color: #dc3545;
-  border-bottom-color: #fecaca;
-}
-
-.profile-container .delete-btn {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-  font-size: clamp(0.8rem, 2vw, 1rem);
-}
-
-.profile-container .delete-btn:hover {
-  background-color: #c82333;
-}
-
 /* Footer Styles */
 footer div {
   display: flex;

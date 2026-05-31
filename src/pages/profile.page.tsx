@@ -1,15 +1,8 @@
 import React from "react";
-import {
-  mockGetUserProfile,
-  mockChangePassword,
-  mockDeleteAccount,
-  mockUpdateUserProfile,
-} from "../services/auth.service";
+import { updateUserProfile } from "../services/auth.service";
 import type { UserProfile } from "../services/auth.service";
-import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
-  const navigate = useNavigate();
   const [profile, setProfile] = React.useState<UserProfile | null>(null);
   const [loadingInitial, setLoadingInitial] = React.useState(true);
 
@@ -25,38 +18,37 @@ const ProfilePage = () => {
   } | null>(null);
 
   React.useEffect(() => {
-    const fetchProfile = async () => {
-      const response = await mockGetUserProfile();
-      if (response.success && response.data) {
-        setProfile(response.data);
-        setFirstName(response.data.firstName);
-        setLastName(response.data.lastName);
-        setEmail(response.data.email);
-      } else {
-        setMessage({
-          type: "error",
-          text: "Failed to load profile. Please try again.",
-        });
-      }
-      setLoadingInitial(false);
-    };
-    fetchProfile();
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser) as UserProfile;
+      setProfile(parsedUser);
+      setFirstName(parsedUser.firstName || "");
+      setLastName(parsedUser.lastName || "");
+      setEmail(parsedUser.email || "");
+    }
+    setLoadingInitial(false);
   }, []);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
     setMessage(null);
-    const response = await mockUpdateUserProfile({
+    const response = await updateUserProfile({
       firstName,
       lastName,
       email,
     });
     if (response.success) {
-      setMessage({ type: "success", text: response.message });
-      setProfile((prev) =>
-        prev ? { ...prev, firstName, lastName, email } : null,
-      );
+      setMessage({
+        type: "success",
+        text: response.message || "Profile updated successfully.",
+      });
+      setProfile((prev) => (prev ? { ...prev, ...response.data } : null));
+    } else {
+      setMessage({
+        type: "error",
+        text: response.message || "Failed to update profile changes.",
+      });
     }
     setIsSaving(false);
   };
@@ -66,29 +58,18 @@ const ProfilePage = () => {
     if (!newPassword) return;
 
     setIsSaving(true);
-    const response = await mockChangePassword(newPassword);
+    const response = await updateUserProfile({ password: newPassword });
     if (response.success) {
-      setMessage({ type: "success", text: response.message });
+      setMessage({
+        type: "success",
+        text: response.message || "Password updated successfully.",
+      });
       setNewPassword("");
-    }
-    setIsSaving(false);
-  };
-
-  const handleDeleteAccount = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone.",
-    );
-    if (!confirmDelete) return;
-
-    setIsSaving(true);
-    const response = await mockDeleteAccount();
-    if (response.success) {
-      localStorage.removeItem("authToken");
-      alert(
-        "Your account has been deleted. You will be redirected to the homepage.",
-      );
-      navigate("/");
-      window.location.reload();
+    } else {
+      setMessage({
+        type: "error",
+        text: response.message || "Failed to update password.",
+      });
     }
     setIsSaving(false);
   };
@@ -170,19 +151,6 @@ const ProfilePage = () => {
               Update Password
             </button>
           </form>
-        </div>
-
-        <div className="profile-card danger-zone">
-          <h3>Delete Account</h3>
-          <p>Deleting your account will permanently remove all your data.</p>
-          <button
-            type="button"
-            className="delete-btn"
-            onClick={handleDeleteAccount}
-            disabled={isSaving}
-          >
-            Delete Account
-          </button>
         </div>
       </div>
     </div>

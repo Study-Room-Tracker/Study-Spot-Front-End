@@ -1,6 +1,7 @@
 const API_BASE_URL = "http://localhost:4000/api";
 
 export interface UserProfile {
+  id?: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -63,6 +64,7 @@ export const loginUser = async (
     if (data.user && data.user.role) {
       localStorage.setItem("authToken", data.user.token);
       localStorage.setItem("userRole", data.user.role);
+      localStorage.setItem("user", JSON.stringify(data.user));
     }
     return {
       success: true,
@@ -80,68 +82,56 @@ export const loginUser = async (
   }
 };
 
-export const mockGetUserProfile = async (): Promise<{
+export const updateUserProfile = async (payload: {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  password?: string;
+}): Promise<{
   success: boolean;
-  data?: UserProfile;
+  data?: Partial<UserProfile>;
   message?: string;
 }> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  try {
+    const token = localStorage.getItem("authToken");
 
-  // 1. Check who is currently logged in by looking at localStorage
-  const currentRole = localStorage.getItem("userRole") || "USER";
+    const savedUser = localStorage.getItem("user");
+    if (!savedUser)
+      throw new Error("User session not found. Please log in again.");
 
-  // 2. Return the Admin profile if they are an admin
-  if (currentRole === "ADMIN") {
+    const parsedUser = JSON.parse(savedUser);
+    const userId = parsedUser.id;
+
+    const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    if (!response.ok)
+      throw new Error(data.message || "Failed to save profile changes.");
+
+    if (data.user) {
+      const updatedLocalUser = { ...parsedUser, ...data.user };
+      localStorage.setItem("user", JSON.stringify(updatedLocalUser));
+    }
+
     return {
       success: true,
-      data: {
-        firstName: "Jane",
-        lastName: "Smith",
-        email: "admin@test.com",
-        role: "ADMIN",
-      },
+      data: data.user,
+      message: data.status,
+    };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "An error occurred updating profile.",
     };
   }
-
-  // 3. Otherwise, return the standard User (John Doe) profile
-  return {
-    success: true,
-    data: {
-      firstName: "John",
-      lastName: "Doe",
-      email: "user@test.com",
-      role: "USER",
-    },
-  };
-};
-
-export const mockUpdateUserProfile = (
-  data: Partial<UserProfile>,
-): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, message: "Profile updated successfully" });
-    }, 1000);
-  });
-};
-
-export const mockChangePassword = (
-  password: string,
-): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, message: "Password changed successfully" });
-    }, 1000);
-  });
-};
-
-export const mockDeleteAccount = (): Promise<{
-  success: boolean;
-  message: string;
-}> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, message: "Account deleted successfully" });
-    }, 1500);
-  });
 };
